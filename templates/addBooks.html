@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+
+
+{% block style %}
+
+<style>
+    #navAddbooks{
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+{% endblock style %}
+
+
+{% block body %}
+
+{% if created %}
+
+<div class='d-flex flex my-5 flex-column align-items-center'>
+    <h1 class='text-success fw-bold'>Success!</h1>
+    <p class='fw-bold '>{{books}} found and successfully imported!</p>
+    <a href="/" class='btn btn-primary'>Go to home</a>
+</div>
+
+{% elif error %}
+
+<div class='d-flex flex my-5 flex-column align-items-center'>
+    <h1 class='text-success fw-bold'>Error!</h1>
+    <p class='fw-bold '>Please enter a unique email!</p>
+    <a href="/addmember/" class='btn btn-primary'>Try again</a>
+</div>
+
+{% else %}
+
+<div class="container w-50">
+    <div class="head">
+        <h3>Add new books</h3>
+    </div>
+    <div class="form">
+        <form action='/addbooks/' method='post'> {% csrf_token %}
+            <div class="mb-3">
+              <label for="nameField" class="form-label">Please enter title for seaching</label>
+              <input required name='name' type="text" class="form-control" id="nameField" aria-describedby="emailHelp">
+            </div>
+
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Number of books to import</label>
+              <input required name='books' type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Per book quantity</label>
+              <input required name='quantity' type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock body %}

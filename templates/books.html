@@ -1,0 +1,67 @@
+{% extends "index.html" %}
+
+{% block style %}
+
+<style>
+    #navBooks{
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+{% endblock style %}
+
+{% block body %}
+
+<div class='container d-flex flex-wrap justify-content-center '>
+
+    
+    {% for book in books %}
+    <div class="card m-4" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{book.title|slice:22}}...</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{book.author|slice:20}}...</h6>
+            <div class='d-flex my-4 justify-content-between align-items-center'>
+                <h6 class="card-subtitle mb-2">Pages : {{book.page_count}}</h6>
+                <h6 class="card-subtitle mb-2">In stock : {{book.stock_count}}</h6>
+
+            </div>
+
+            <div class="btns d-flex justify-content-between">
+
+                {% if book.stock_count == 0%}
+                <button class="btn btn-danger ml-2 disabled">Out of stock</button>
+                {% else %}
+                <a href="/issuebook/{{book.id}}" class="btn btn-primary ml-2">Give</a>
+                {% endif %}
+             
+                <a href="/returnbook/{{book.id}}" class="btn btn-success">Take</a>
+                <button onclick="deleteBook({{book.id}})" class="btn btn-danger">Delete</button>
+
+            </div>
+
+   
+        </div>
+    </div>
+    {% endfor %}
+
+
+</div>
+
+{% endblock body %}
+
+{% block script %}
+
+<script>
+
+function deleteBook(id){
+
+    if (confirm("You are deleting this member.") == true) {
+        window.location.href = `/deletebook/${id}`
+    }
+}
+
+</script>
+
+
+{% endblock script %}

@@ -1,0 +1,59 @@
+{% extends "index.html" %}
+
+{% block style %}
+
+<style>
+    #navMembers{
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+{% endblock style %}
+
+{% block body %}
+
+<div class="container">
+    {% for member in members %}
+
+        <div class="member border p-4 my-2 rounded">
+            <div class="head d-flex justify-content-between">
+                <div class='w-25'>
+                    <h4>{{member.name}}</h4>
+                    <h6 class='text-muted'>{{member.email}}</h6>
+                </div>
+                <div>
+                    <p><strong>Outstanding_debt</strong> : {{member.outstanding_debt}}</p>
+                    {% for book in books %}
+                    {% if book.memberId == member.id %}
+                    <p><strong>Books</strong> : {{book.books}}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    <button id='deletebtn' onclick="deleteUser({{member.id}})" class='btn btn-danger'>Delete</button>
+
+                </div>
+            </div>
+        </div>
+    
+    {% endfor %}
+</div>
+
+{% endblock body %}
+
+{% block script %}
+
+<script>
+
+function deleteUser(id){
+
+    if (confirm("You are deleting this member.") == true) {
+        window.location.href = `/deletemember/${id}`
+    }
+}
+
+</script>
+
+
+{% endblock script %}

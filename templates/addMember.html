@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+
+
+{% block style %}
+
+<style>
+    #navAddmember{
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+{% endblock style %}
+
+
+{% block body %}
+
+{% if created %}
+
+<div class='d-flex flex my-5 flex-column align-items-center'>
+    <h1 class='text-success fw-bold'>Success!</h1>
+    <p class='fw-bold '>{{member.name}} successfully added to members list!</p>
+    <a href="/" class='btn btn-primary'>Go to home</a>
+</div>
+
+{% elif error %}
+
+<div class='d-flex flex my-5 flex-column align-items-center'>
+    <h1 class='text-success fw-bold'>Error!</h1>
+    <p class='fw-bold '>Please enter a unique email!</p>
+    <a href="/addmember/" class='btn btn-primary'>Try again</a>
+</div>
+
+{% else %}
+
+<div class="container w-50">
+    <div class="head">
+        <h3>Add a new member</h3>
+    </div>
+    <div class="form">
+        <form action='/addmember/' method='post'> {% csrf_token %}
+            <div class="mb-3">
+              <label for="nameField" class="form-label">Name</label>
+              <input required name='name' type="text" class="form-control" id="nameField" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Email address</label>
+              <input required name='email' type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock body %}
