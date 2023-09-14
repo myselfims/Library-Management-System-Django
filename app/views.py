@@ -30,53 +30,58 @@ def dashboard(request):
 
 
 def issueBook(request, id):
-    book = Book.objects.get(id=id)
-    
-    if request.method == 'POST':
-        memberId = request.POST.get('memberId')
-        rent = request.POST.get('rent')
-        member = Member.objects.get(id=memberId)
-        if (member.outstanding_debt+int(rent) > 500):
-            print(True)
-            return render(request,'issueBook.html',{'error':True,"member":member})
-            
-        transact = Transaction(book=book,member=member,rent_fee=rent)
-        book.stock_count = book.stock_count - 1
-        book.save()
-        transact.save()
-        return render(request,'issueBook.html',{'transact':True,"member":member})
-    members = Member.objects.all()
-    return render(request,'issueBook.html',{'members':members,'book':book})
+    try:
+        book = Book.objects.get(id=id)
+        
+        if request.method == 'POST':
+            memberId = request.POST.get('memberId')
+            rent = request.POST.get('rent')
+            member = Member.objects.get(id=memberId)
+            if (member.outstanding_debt+int(rent) > 500):
+                print(True)
+                return render(request,'issueBook.html',{'error':True,"member":member})
+                
+            transact = Transaction(book=book,member=member,rent_fee=rent)
+            book.stock_count = book.stock_count - 1
+            book.save()
+            transact.save()
+            return render(request,'issueBook.html',{'transact':True,"member":member})
+        members = Member.objects.all()
+        return render(request,'issueBook.html',{'members':members,'book':book})
+    except:
+        return render(request, '404.html')
 
 
 def returnBook(request, id):
-    book = Book.objects.get(id=id)
-    
-    if request.method == 'POST':
-        memberId = request.POST.get('memberId')
-        member = Member.objects.get(id=memberId)
-        transact = Transaction.objects.filter(book=book,member=member)[0]
-        member.outstanding_debt += transact.rent_fee
-        book.stock_count += 1
+    try:
+        book = Book.objects.get(id=id)  
+        if request.method == 'POST':
+            memberId = request.POST.get('memberId')
+            member = Member.objects.get(id=memberId)
+            transact = Transaction.objects.filter(book=book,member=member)[0]
+            member.outstanding_debt += transact.rent_fee
+            book.stock_count += 1
+            
+            print(transact.return_date)
+            transact.return_date = date.today()
+            print(transact.return_date)
+            member.save()
+            transact.save()
+            book.save()
+            return render(request,'returnBook.html',{'transact':True,"member":member})
         
-        print(transact.return_date)
-        transact.return_date = date.today()
-        print(transact.return_date)
-        member.save()
-        transact.save()
-        book.save()
-        return render(request,'returnBook.html',{'transact':True,"member":member})
-    
 
-    transact = Transaction.objects.filter(book=book)
-    members = []
-    
-    for t in transact:
-        if t.return_date == None:
-            print(True)
-            members.append(t.member)
-    
-    return render(request,'returnBook.html',{'members': members,'book':book})
+        transact = Transaction.objects.filter(book=book)
+        members = []
+        
+        for t in transact:
+            if t.return_date == None:
+                print(True)
+                members.append(t.member)
+        
+        return render(request,'returnBook.html',{'members': members,'book':book})
+    except:
+        return render(request, '404.html')
     
     
 def members(request):
@@ -102,14 +107,20 @@ def addMember(request):
     return render(request,'addMember.html')
 
 def deleteMember(request,id):
-    member = Member.objects.get(id=id)
-    member.delete()
-    return redirect('/members')
+    try:
+        member = Member.objects.get(id=id)
+        member.delete()
+        return redirect('/members')
+    except:
+        return render(request, '404.html')
 
 def deleteBook(request,id):
-    book = Book.objects.get(id=id)
-    book.delete()
-    return redirect('/')
+    try:
+        book = Book.objects.get(id=id)
+        book.delete()
+        return redirect('/')
+    except:
+        return render(request, '404.html')
 
 def addBooks(request):
     
